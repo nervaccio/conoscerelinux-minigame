@@ -1,2 +1,3 @@
-# conoscerelinux-minigame
-Mini game per l'associazone Conoscerelinux
+# Conoscerelinux Minigame
+Mini game per l'associazone Conoscerelinux  
+

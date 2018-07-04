@@ -1,0 +1,88 @@
+<style>
+body { font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"; font-size: 18px; line-height: 21px; letter-spacing: 2px;}
+canvas { background: linear-gradient(-135deg, rgba(30,87,153,1) 0%,rgba(41,137,216,0.5) 50%,rgba(125,185,232,0) 100%); display: block; margin: 15 auto; cursor: crosshair; box-shadow: 0 0 6px #7c7c7c;}
+#head { width: 400px; margin: 0 auto; text-align: center; overflow: hidden;}
+table {width: 100%; max-width: 500px; text-align: center; margin: 0 auto;}
+table td {width: 50%;}
+</style>
+
+<div id="head"><a title="Conoscerelinux Modena" href="https://conoscerelinux.org/"><img src="https://conoscerelinux.org/wp-content/uploads/2017/04/Conoscerelinux_logo.png" alt="Conoscerelinux" width="100"></a></div>
+<canvas id="game" width="500" height="500"></canvas>
+<div id="footer">
+    <table>
+        <td><b>COLPITI</b><br><span id="point">0</span></td>
+        <td><b>MANCATI</b><br><span id="miss">0</span></td>
+    </table>
+</div>
+
+<script>
+var canvas = document.getElementById("game");
+var ctx = canvas.getContext("2d");
+var idScore = document.getElementById('point');
+var idMiss = document.getElementById('miss');
+var score = 0;
+var miss = 0;
+var baloons = [];
+
+canvas.addEventListener("click", HitHandler, false);
+moreBaloon(); moreBaloon(); moreBaloon(); moreBaloon();
+draw();
+
+function moreBaloon() {
+    var x = Math.floor(Math.random() * canvas.width);
+    var y = canvas.height;
+    var radius = 15 + Math.floor(Math.random() * 20);
+
+    baloons.push({
+        velocity: -1 - Math.floor(Math.random() * 4),
+        color: "#FF" + Math.floor(Math.random() * 10000),
+        x: x,
+        xmin: x - radius,
+        xmax: x + radius,
+        y: y,
+        ymin: y - radius,
+        ymax: y + radius,
+        radius: radius,
+    });
+}
+
+function HitHandler(event) {
+    baloons.forEach(function(el, i, baloon){
+        hitX = event.layerX - canvas.offsetLeft;
+        hitY = event.layerY - canvas.offsetTop;
+
+        if (hitX >= el.xmin && hitX <= el.xmax && hitY >= el.ymin && hitY <= el.ymax ) {
+            baloon.splice(i, 1);
+            moreBaloon();
+            idScore.innerText = ++score;
+        }
+    });
+}
+
+function drawBaloon(baloon) {
+    ctx.beginPath();
+    ctx.arc(baloon.x, baloon.y, baloon.radius, 0, Math.PI*2, false);
+    ctx.fillStyle = baloon.color;
+    ctx.fill();
+    ctx.closePath();
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    baloons.forEach(function(e, i, baloon){
+        e.y += e.velocity;
+        e.ymin = e.y - e.radius;
+        e.ymax = e.y + e.radius;
+
+        drawBaloon(e);
+
+        if (e.y < 0) {
+            idMiss.innerText = ++miss;
+            baloon.splice(i, 1);
+            moreBaloon();
+        }
+    });
+
+    requestAnimationFrame(draw);
+}
+</script>
