@@ -48,8 +48,8 @@ function moreBaloon() {
 
 function HitHandler(event) {
     baloons.forEach(function(el, i, baloon){
-        hitX = event.layerX - canvas.offsetLeft;
-        hitY = event.layerY - canvas.offsetTop;
+        hitX = event.pageX - canvas.offsetLeft;
+        hitY = event.pageY - canvas.offsetTop;
 
         if (hitX >= el.xmin && hitX <= el.xmax && hitY >= el.ymin && hitY <= el.ymax ) {
             baloon.splice(i, 1);
